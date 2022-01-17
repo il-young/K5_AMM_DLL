@@ -1,0 +1,28 @@
+D:\1.PJT\20.Amkor Material Manager\Code\AMM\AMM\bin\x64\Release\AMM.dll
+D:\1.PJT\20.Amkor Material Manager\Code\AMM\AMM\bin\x64\Release\AMM.pdb
+D:\1.PJT\20.Amkor Material Manager\Code\AMM\AMM\obj\x64\Release\AMM.csprojAssemblyReference.cache
+D:\1.PJT\20.Amkor Material Manager\Code\AMM\AMM\obj\x64\Release\AMM.csproj.CoreCompileInputs.cache
+D:\1.PJT\20.Amkor Material Manager\Code\AMM\AMM\obj\x64\Release\AMM.dll
+D:\1.PJT\20.Amkor Material Manager\Code\AMM\AMM\obj\x64\Release\AMM.pdb
+D:\1.PJT\2020\20.Amkor Material Manager\Code\AMM\AMM\bin\x64\Release\AMM.dll
+D:\1.PJT\2020\20.Amkor Material Manager\Code\AMM\AMM\bin\x64\Release\AMM.pdb
+D:\1.PJT\2020\20.Amkor Material Manager\Code\AMM\AMM\obj\x64\Release\AMM.csproj.CoreCompileInputs.cache
+D:\1.PJT\2020\20.Amkor Material Manager\Code\AMM\AMM\obj\x64\Release\AMM.dll
+D:\1.PJT\2020\20.Amkor Material Manager\Code\AMM\AMM\obj\x64\Release\AMM.pdb
+C:\Users\18157\Desktop\amm_dll_dev\AMM\bin\x64\Release\AMM.dll
+C:\Users\18157\Desktop\amm_dll_dev\AMM\bin\x64\Release\AMM.pdb
+C:\Users\18157\Desktop\amm_dll_dev\AMM\obj\x64\Release\AMM.csprojAssemblyReference.cache
+C:\Users\18157\Desktop\amm_dll_dev\AMM\obj\x64\Release\AMM.csproj.CoreCompileInputs.cache
+C:\Users\18157\Desktop\amm_dll_dev\AMM\obj\x64\Release\AMM.dll
+C:\Users\18157\Desktop\amm_dll_dev\AMM\obj\x64\Release\AMM.pdb
+C:\Users\18157\Desktop\amm_dll_test\AMM\bin\x64\Release\AMM.dll
+C:\Users\18157\Desktop\amm_dll_test\AMM\bin\x64\Release\AMM.pdb
+C:\Users\18157\Desktop\amm_dll_test\AMM\obj\x64\Release\AMM.csproj.CoreCompileInputs.cache
+C:\Users\18157\Desktop\amm_dll_test\AMM\obj\x64\Release\AMM.dll
+C:\Users\18157\Desktop\amm_dll_test\AMM\obj\x64\Release\AMM.pdb
+C:\Users\18157\Desktop\amm_dll_test\AMM\obj\x64\Release\AMM.csprojAssemblyReference.cache
+C:\Users\157332\Documents\Auto GR\AMM\AMM_DLL_K5\AMM\obj\x64\Release\AMM.csproj.CoreCompileInputs.cache
+C:\Users\157332\Documents\Auto GR\AMM\AMM_DLL_K5\AMM\obj\x64\Release\AMM.dll
+C:\Users\157332\Documents\Auto GR\AMM\AMM_DLL_K5\AMM\obj\x64\Release\AMM.pdb
+C:\Users\157332\Documents\Auto GR\AMM\AMM_DLL_K5\AMM\bin\x64\Release\AMM.dll
+C:\Users\157332\Documents\Auto GR\AMM\AMM_DLL_K5\AMM\bin\x64\Release\AMM.pdb
