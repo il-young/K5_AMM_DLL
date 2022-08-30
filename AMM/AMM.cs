@@ -729,15 +729,11 @@ namespace AMM
                 if (dt != null && dt.Rows.Count > 0)
                 {
 
-
-
                 }
                 else
                 {
                     return "NG, parameter is null or empty";
                 }
-
-
 
                 if (dt.Columns.Contains("DATETIME") == false) { return "NG, \"DATETIME\"columns is no exist in DataTable parameter"; }
                 if (dt.Columns.Contains("LINE_CODE") == false) { return "NG, \"LINE_CODE\"columns is no exist in DataTable parameter"; }
@@ -751,17 +747,14 @@ namespace AMM
                 if (dt.Columns.Contains("PRODUCTION_DATE") == false) { return "NG, \"PRODUCTION_DATE\"columns is no exist in DataTable parameter"; }
                 if (dt.Columns.Contains("INCH_INFO") == false) { return "NG, \"INCH_INFO\"columns is no exist in DataTable parameter"; }
                 if (dt.Columns.Contains("INPUT_TYPE") == false) { return "NG, \"INPUT_TYPE\"columns is no exist in DataTable parameter"; }
+                               
+                string[] eqpIdArry = dt.AsEnumerable().Where(r => String.IsNullOrEmpty((r["EQUIP_ID"] as string)) == false).Select(r => (r["EQUIP_ID"] as string)).Distinct().ToArray();
 
 
-
-                string[] eqpIdArry = dt.AsEnumerable().Where(r => String.IsNullOrEmpty((r["EQUIP_ID"] as string)) == false)
-                .Select(r => (r["EQUIP_ID"] as string)).Distinct().ToArray();
-                if (eqpIdArry != null && eqpIdArry.Length > 0)
+                if (eqpIdArry.Count() != 1)
                 {
-                    if (eqpIdArry.Length > 1)
-                    {
-                        return String.Format($"NG, DataTable parameter must have only one EQUIP_ID type, {String.Join(", ", eqpIdArry)}");
-                    }
+                    //return String.Join(",",eqpIdArry);
+                    return String.Format($"NG, DataTable parameter must have only one EQUIP_ID type, {String.Join(", ", eqpIdArry)}");
                 }
                 else
                 {
@@ -779,8 +772,11 @@ namespace AMM
 
 
                 // DB 저장용 테이블 재구성 - SqlBulkCopy용
-                dt.Columns.Add("LAST_UPDATE_TIME", typeof(DateTime));
-                DateTime timeNow = DateTime.Now;
+                //dt.Columns.Add("LAST_UPDATE_TIME", typeof(DateTime)); // SqlDateTime 이 SQL Server 2008에 추가된 날짜/시간 형식 중 하나인 SQL Server 열에 형식 열을 대량 로드 DataTable 할 때 실패합니다.
+                //DateTime timeNow = DateTime.Now;
+
+                dt.Columns.Add("LAST_UPDATE_TIME", typeof(string));
+                string timeNow = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
                 dt.AsEnumerable().ToList().ForEach(r => r["LAST_UPDATE_TIME"] = timeNow);
                 DataTable dtRltForDB = dt;
                 dtRltForDB.Columns["DATETIME"].SetOrdinal(0);
@@ -795,17 +791,16 @@ namespace AMM
                 dtRltForDB.Columns["PRODUCTION_DATE"].SetOrdinal(9);
                 dtRltForDB.Columns["INCH_INFO"].SetOrdinal(10);
                 dtRltForDB.Columns["INPUT_TYPE"].SetOrdinal(11);
+
                 dtRltForDB.Columns["LAST_UPDATE_TIME"].SetOrdinal(12);
-
-
-
+                dtRltForDB.Columns.RemoveAt(12);
+                
+                               
                 using (System.Data.SqlClient.SqlConnection connection = new System.Data.SqlClient.SqlConnection(this.connectionString))
                 {
                     connection.Open();
                     System.Data.SqlClient.SqlTransaction tran = connection.BeginTransaction();
-
-
-
+                                       
                     try
                     {
                         using (System.Data.SqlClient.SqlCommand cmd = connection.CreateCommand())
@@ -813,37 +808,69 @@ namespace AMM
                             // 테이블 데이터 삭제 TB_MTL_SYNC
                             string eqpID = eqpIdArry[0];
                             string delQuery = string.Format(
-                            $"delete from TB_MTL_SYNC " +
+                            $"delete from [TB_PICK_LIST_INFO] " +
                             $"where 1 = 1 " +
                             $" and EQUIP_ID = '{eqpID}'");
-
-
 
                             cmd.Transaction = tran;
                             cmd.CommandText = delQuery;
                             cmd.ExecuteNonQuery();
                         }
-                        using (System.Data.SqlClient.SqlBulkCopy sqlBulkCopy = new System.Data.SqlClient.SqlBulkCopy(connection, System.Data.SqlClient.SqlBulkCopyOptions.TableLock, tran))
+
+
+                        using (System.Data.SqlClient.SqlCommand cmd = connection.CreateCommand())
                         {
-                            sqlBulkCopy.BulkCopyTimeout = 0;
-                            sqlBulkCopy.BatchSize = dtRltForDB.Rows.Count;
-                            sqlBulkCopy.DestinationTableName = "TB_MTL_SYNC";
-
-
-
-                            //// Set up the column mappings by name.
-                            //System.Data.SqlClient.SqlBulkCopyColumnMapping mapID = new System.Data.SqlClient.SqlBulkCopyColumnMapping("ProductID", "ProdID");
-                            //sqlBulkCopy.ColumnMappings.Add(mapID);
-
-
-
-                            sqlBulkCopy.WriteToServer(dtRltForDB);
-                            sqlBulkCopy.Close();
+                            // 테이블 데이터 삭제 TB_MTL_SYNC
+                            string eqpID = eqpIdArry[0];
+                            string delQuery = string.Format(
+                            $"delete from TB_MTL_INFO " +
+                            $"where 1 = 1 " +
+                            $" and EQUIP_ID = '{eqpID}'");
+                                                        
+                            cmd.Transaction = tran;
+                            cmd.CommandText = delQuery;
+                            cmd.ExecuteNonQuery();
                         }
 
+                        //using (System.Data.SqlClient.SqlCommand cmd = connection.CreateCommand())
+                        //{
+                        //    for(int i = 0; i < dtRltForDB.Rows.Count; i++)
+                        //    {
+                        //        string delQuery = string.Format("insert into TB_MTL_INFO values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}')",
+                        //            dtRltForDB.Rows[i][0].ToString(), dtRltForDB.Rows[i][1].ToString(), dtRltForDB.Rows[i][2].ToString(), dtRltForDB.Rows[i][3].ToString(), dtRltForDB.Rows[i][4].ToString(),
+                        //            dtRltForDB.Rows[i][5].ToString(), dtRltForDB.Rows[i][6].ToString(), dtRltForDB.Rows[i][7].ToString(), dtRltForDB.Rows[i][8].ToString(), dtRltForDB.Rows[i][9].ToString(),
+                        //            dtRltForDB.Rows[i][10].ToString(), dtRltForDB.Rows[i][11].ToString());
 
+                        //        cmd.Transaction = tran;
+                        //        cmd.CommandText = delQuery;
+                        //        cmd.ExecuteNonQuery();
+                        //    }
 
-                        tran.Commit();
+                        //}
+
+                        using (System.Data.SqlClient.SqlBulkCopy sqlBulkCopy = new System.Data.SqlClient.SqlBulkCopy(connection, System.Data.SqlClient.SqlBulkCopyOptions.TableLock, tran))
+                        {
+                            try
+                            {
+                                sqlBulkCopy.BulkCopyTimeout = 0;
+                                sqlBulkCopy.BatchSize = dtRltForDB.Rows.Count;
+                                sqlBulkCopy.DestinationTableName = "TB_MTL_INFO";
+
+                                //// Set up the column mappings by name.
+                                //System.Data.SqlClient.SqlBulkCopyColumnMapping mapID = new System.Data.SqlClient.SqlBulkCopyColumnMapping("ProductID", "ProdID");
+                                //sqlBulkCopy.ColumnMappings.Add(mapID);
+
+                                sqlBulkCopy.WriteToServerAsync(dtRltForDB);
+                                tran.Commit();
+
+                                sqlBulkCopy.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                ReturnLogSave("SetMaterialSync" + "|||" + ex.Message);
+                            }
+
+                        }
                     }
                     catch (Exception e)
                     {
@@ -856,8 +883,6 @@ namespace AMM
             {
                 return String.Format($"NG, Exception, {ex}");
             }
-
-
 
             return "OK";
         }

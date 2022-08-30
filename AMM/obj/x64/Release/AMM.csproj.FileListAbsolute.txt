@@ -26,3 +26,9 @@ C:\Users\157332\Documents\Auto GR\AMM\AMM_DLL_K5\AMM\obj\x64\Release\AMM.dll
 C:\Users\157332\Documents\Auto GR\AMM\AMM_DLL_K5\AMM\obj\x64\Release\AMM.pdb
 C:\Users\157332\Documents\Auto GR\AMM\AMM_DLL_K5\AMM\bin\x64\Release\AMM.dll
 C:\Users\157332\Documents\Auto GR\AMM\AMM_DLL_K5\AMM\bin\x64\Release\AMM.pdb
+D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\bin\x64\Release\AMM.dll
+D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\bin\x64\Release\AMM.pdb
+D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\obj\x64\Release\AMM.csproj.CoreCompileInputs.cache
+D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\obj\x64\Release\AMM.dll
+D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\obj\x64\Release\AMM.pdb
+D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\obj\x64\Release\AMM.csprojAssemblyReference.cache
