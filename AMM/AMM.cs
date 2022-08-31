@@ -2497,7 +2497,7 @@ namespace AMM
 
             if (nCount == 0)
             {
-                return "USE";
+                return "";
             }
 
             string strUse = dt.Rows[0]["TWR_USE"].ToString();
