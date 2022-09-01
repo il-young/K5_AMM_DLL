@@ -2318,6 +2318,28 @@ namespace AMM
             return "OK";
         }
 
+        public void DeletePickIDInfobyEmployee(string strLinecode, string strEquipid, string employee)
+        {
+            string query = "";
+
+            query = string.Format("DELETE FROM TB_PICK_ID_INFO WHERE LINE_CODE='{0}' and EQUIP_ID='{1}' and REQUESTOR='{2}'", strLinecode, strEquipid, employee);
+
+            int nJudge = MSSql.SetData(query);
+            
+            string query2 = "";
+            List<string> queryList2 = new List<string>();
+
+            string strSendtime = string.Format("{0}{1:00}{2:00}{3:00}{4:00}{5:00}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+
+            /////Log 저장
+            query2 = string.Format(@"INSERT INTO TB_PICK_ID_HISTORY (DATETIME,LINE_CODE,EQUIP_ID,PICKID,QTY,STATUS,REQUESTOR) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')",
+                strSendtime, strLinecode, strEquipid, "", "", "CANCEL", employee);
+
+            queryList2.Add(query2);
+
+            nJudge = MSSql.SetData(queryList2); ///return 확인 해서 false 값 날려 야 함.
+        }
+
         public string Delete_Pickidinfo2(string strLinecode, string strEquipid, string strPickid)
         {
             string query = "";
