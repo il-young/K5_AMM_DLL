@@ -1127,6 +1127,17 @@ namespace AMM
             return "OK";
         }
 
+        public string ReadAppVersion(string AppName)
+        {
+            string res = "";
+            DataTable dt = MSSql.GetData(String.Format("select [LAST_VER] from [TBL_UPDATE] with(nolock) where [NAME]='{0}'", AppName));
+
+            if (dt.Rows.Count == 1)
+                res = dt.Rows[0][0].ToString();
+
+            return res;
+        }
+
         public string SetLoadComplete(string strLinecode, string strEquipid, string strBcrinfo, bool bWebservice)
         {
             //1. Barcode parsing 
