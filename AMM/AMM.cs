@@ -2229,6 +2229,23 @@ namespace AMM
             return "OK";
         }
 
+        public string Delete_UserRequest(string sid, string date)
+        {
+            string query = "";
+
+            query = string.Format("DELETE FROM TB_USER_REQ WHERE USER_SID='{0}' and [DATETIME]='{1}'", sid, date);
+
+            int nJudge = MSSql.SetData(query);
+
+            if (nJudge == 0)
+            {
+                ReturnLogSave(string.Format("Delete_UserRequest TB_USER_REQ DELETE FAIL UID : {0}", sid));
+                return "TB_USER_REQ DELETE FAIL";
+            }
+
+            return "OK";
+        }
+
         public string Delete_EquipmentInfo(string strLinecode, string strEquipid)
         {
             string query = "";
