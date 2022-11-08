@@ -1144,7 +1144,7 @@ namespace AMM
         public string ReadAppDate(string AppName)
         {
             string res = "";
-            DataTable dt = MSSql.GetData(String.Format("select [DATE] from [TBL_UPDATE] with(nolock) where [NAME]='{0}'", AppName));
+            DataTable dt = MSSql.GetData(String.Format("select [LAST_VER] from [TBL_UPDATE] with(nolock) where [NAME]='{0}'", AppName));
 
             if (dt.Rows.Count == 1)
                 res = dt.Rows[0][0].ToString();
