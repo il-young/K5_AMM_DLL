@@ -2588,26 +2588,26 @@ namespace AMM
         {
             string query = "";
             query = string.Format(@"select A.*, B.INCH_7_CAPA, B.INCH_13_CAPA
-, convert(decimal(10, 2), ((A.INCH_7_CNT / B.INCH_7_CAPA) * 100)) as INCH_7_LOAD_RATE
-, convert(decimal(10, 2), ((A.INCH_13_CNT / B.INCH_13_CAPA) * 100)) as INCH_13_LOAD_RATE
-from
-(
-select EQUIP_ID
-, sum(INCH_7) as INCH_7_CNT, sum(INCH_13) as INCH_13_CNT
-from
-(
-select *
-, case when INCH_INFO = '7' then 1 else 0 end as INCH_7
-, case when INCH_INFO = '13' then 1 else 0 end as INCH_13
-from TB_MTL_INFO with(nolock)
-where 1=1
---and EQUIP_ID = 'TWR1'
-) T
-group by EQUIP_ID
-) A 
-left outer join TB_TOWER_CAPA B with(nolock)
-on A.EQUIP_ID = B.EQUIP_ID
-order by EQUIP_ID");
+                , convert(decimal(10, 2), ((A.INCH_7_CNT / B.INCH_7_CAPA) * 100)) as INCH_7_LOAD_RATE
+                , convert(decimal(10, 2), ((A.INCH_13_CNT / B.INCH_13_CAPA) * 100)) as INCH_13_LOAD_RATE
+                from
+                (
+                select EQUIP_ID
+                , sum(INCH_7) as INCH_7_CNT, sum(INCH_13) as INCH_13_CNT
+                from
+                (
+                select *
+                , case when INCH_INFO = '7' then 1 else 0 end as INCH_7
+                , case when INCH_INFO = '13' then 1 else 0 end as INCH_13
+                from TB_MTL_INFO with(nolock)
+                where 1=1
+                --and EQUIP_ID = 'TWR1'
+                ) T
+                group by EQUIP_ID
+                ) A 
+                left outer join TB_TOWER_CAPA B with(nolock)
+                on A.EQUIP_ID = B.EQUIP_ID
+                order by EQUIP_ID");
 
             DataTable dt = MSSql.GetData(query);
 
