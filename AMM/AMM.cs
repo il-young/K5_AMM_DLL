@@ -1832,6 +1832,13 @@ namespace AMM
             return MSSql.GetData(text, 1);
         }
 
+        public DataTable GetMTLInfo_SID_ALL(string strLinecode, string strSID, string tower)
+        {
+            string text = "";
+            text = $"SELECT * FROM TB_MTL_INFO WITH (NOLOCK) WHERE LINE_CODE='{strLinecode}' and SID='{strSID}' and EQUIP_ID='{tower}'";
+            return MSSql.GetData(text, 1);
+        }
+
 
         public DataTable GetMTLInfo_UID(string strLinecode, string strEquipid, string strUID)
         {
@@ -2088,6 +2095,17 @@ namespace AMM
             string query = "";
 
             query = string.Format(@"SELECT * FROM TB_PICK_READY_INFO WITH (NOLOCK) WHERE PICKID='{0}'", strPickingid);
+
+            DataTable dt = MSSql.GetData(query);
+
+            return dt;
+        }
+
+        public DataTable GetPickReadInfo(string userID)
+        {
+            string query = "";
+
+            query = string.Format(@"SELECT * FROM TB_PICK_READY_INFO WITH (NOLOCK) WHERE REQUESTOR='{0}'", userID);
 
             DataTable dt = MSSql.GetData(query);
 
