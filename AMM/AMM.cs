@@ -14,6 +14,12 @@ namespace AMM
         public MsSqlManager MSSql = null; //AMM
         public bool bConnection = false;
 
+        string IP = "10.141.13.174";
+        string PORT = "50150";
+        string DBName = "ATK5-AMM-DBv1";
+        string ID = "ammadm";
+        string PW = "35iu={#q6w@-";
+
         public string connectionString = String.Empty;
 
         public string Connect()
@@ -24,7 +30,8 @@ namespace AMM
                 return "NG";
             }
 
-            string strConnetion = string.Format("server=10.141.27.24;database=ATK5-AMM-DBv1; user id=sa;password=amm@123"); //AMM SERVER
+            //string strConnetion = string.Format("server=10.141.27.24;database=ATK5-AMM-DBv1; user id=sa;password=amm@123"); //AMM SERVER
+            string strConnetion = $"server={IP},{PORT};database={DBName}; user id={ID};password={PW}"; //AMM SERVER
             this.connectionString = strConnetion;
 
             MSSql = new MsSqlManager(strConnetion);
@@ -1715,13 +1722,21 @@ namespace AMM
             return "OK";
         }
 
+        private void DeletePickReadyInfo(string strLinecode, string strEquipid, string PickID)
+        {
+            string query = $"Delete FROM TB_PICK_READY_INFO WHERE LINE_CODE='{strLinecode}' and EQUIP_ID='{strEquipid}' and PICKID < '{PickID}'";
+
+            MSSql.SetData(query);
+        }
+
         public DataTable GetPickIDNo(string strLinecode, string strEquipid)
         {
             string query = "";
 
             query = string.Format(@"SELECT * FROM TB_IDNUNMER_INFO WITH (NOLOCK) WHERE LINE_CODE='{0}' and EQUIP_ID='{1}'", strLinecode, strEquipid);
-
             DataTable dt = MSSql.GetData(query);
+
+            DeletePickReadyInfo(strLinecode, strEquipid, dt.Rows[0]["PICK_PREFIX"].ToString().Trim() + dt.Rows[0]["PICK_NUM"].ToString().Trim());
 
             return dt;
         }
