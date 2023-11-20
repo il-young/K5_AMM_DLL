@@ -1724,7 +1724,7 @@ namespace AMM
 
         private void DeletePickReadyInfo(string strLinecode, string strEquipid, string PickID)
         {
-            string query = $"Delete FROM TB_PICK_READY_INFO WHERE LINE_CODE='{strLinecode}' and EQUIP_ID='{strEquipid}' and PICKID < '{PickID}'";
+            string query = $"Delete FROM TB_PICK_READY_INFO WHERE LINE_CODE='{strLinecode}' and EQUIP_ID='{strEquipid}' and [LAST_UPDATE_TIME] <= DATEADD(DAY,-1, GETDATE()) ";
 
             MSSql.SetData(query);
         }
@@ -1971,7 +1971,7 @@ namespace AMM
 
             string query = "";
 
-            query = string.Format(@"INSERT INTO TB_PICK_READY_INFO (LINE_CODE,EQUIP_ID,PICKID,UID,REQUESTOR,TOWER_NO,SID,LOTID,QTY,MANUFACTURER,PRODUCTION_DATE,INCH_INFO,INPUT_TYPE, ORDER_TYPE) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}')",
+            query = string.Format(@"INSERT INTO TB_PICK_READY_INFO (LINE_CODE,EQUIP_ID,PICKID,UID,REQUESTOR,TOWER_NO,SID,LOTID,QTY,MANUFACTURER,PRODUCTION_DATE,INCH_INFO,INPUT_TYPE, ORDER_TYPE, LAST_UPDATE_TIME) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}', GETDATE())",
                 strLinecode, strEquipid, strPickid, strUid, strRequestor, strTwrno, strSid, strLotid, strQty, strManufacturer, strProductiondate, strInchinfo, strInputtype, strOrdertype);
 
             queryList.Add(query);

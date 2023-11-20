@@ -10,3 +10,9 @@ D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\obj\Debug\AMM.csprojAssemblyReference.cach
 D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\obj\Debug\AMM.csproj.CoreCompileInputs.cache
 D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\obj\Debug\AMM.dll
 D:\Project\AMM\K5\AMM_DLL_K5_0704\AMM\obj\Debug\AMM.pdb
+D:\Project\AMM\K5\AMM_DLL\AMM\bin\Debug\AMM.dll
+D:\Project\AMM\K5\AMM_DLL\AMM\bin\Debug\AMM.pdb
+D:\Project\AMM\K5\AMM_DLL\AMM\obj\Debug\AMM.csprojAssemblyReference.cache
+D:\Project\AMM\K5\AMM_DLL\AMM\obj\Debug\AMM.csproj.CoreCompileInputs.cache
+D:\Project\AMM\K5\AMM_DLL\AMM\obj\Debug\AMM.dll
+D:\Project\AMM\K5\AMM_DLL\AMM\obj\Debug\AMM.pdb
