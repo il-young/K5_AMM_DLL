@@ -30,8 +30,8 @@ namespace AMM
                 return "NG";
             }
 
-            //string strConnetion = string.Format("server=10.141.27.24;database=ATK5-AMM-DBv1; user id=sa;password=amm@123"); //AMM SERVER
-            string strConnetion = $"server={IP},{PORT};database={DBName}; user id={ID};password={PW}"; //AMM SERVER
+            string strConnetion = string.Format("server=10.141.27.24;database=ATK5-AMM-DBv1; user id=sa;password=amm@123"); //Old AMM SERVER
+            //string strConnetion = $"server={IP},{PORT};database={DBName}; user id={ID};password={PW}"; //New AMM SERVER
             this.connectionString = strConnetion;
 
             MSSql = new MsSqlManager(strConnetion);
@@ -1724,7 +1724,7 @@ namespace AMM
 
         private void DeletePickReadyInfo(string strLinecode, string strEquipid, string PickID)
         {
-            string query = $"Delete FROM TB_PICK_READY_INFO WHERE LINE_CODE='{strLinecode}' and EQUIP_ID='{strEquipid}' and [LAST_UPDATE_TIME] <= DATEADD(DAY,-1, GETDATE()) ";
+            string query = $"Delete FROM TB_PICK_READY_INFO WHERE LINE_CODE='{strLinecode}' and EQUIP_ID='{strEquipid}' and ([LAST_UPDATE_TIME] <= DATEADD(HOUR,-1, GETDATE()) OR [LAST_UPDATE_TIME] is NULL)";
 
             MSSql.SetData(query);
         }
