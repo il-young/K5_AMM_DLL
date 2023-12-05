@@ -30,8 +30,8 @@ namespace AMM
                 return "NG";
             }
 
-            string strConnetion = string.Format("server=10.141.27.24;database=ATK5-AMM-DBv1; user id=sa;password=amm@123"); //Old AMM SERVER
-            //string strConnetion = $"server={IP},{PORT};database={DBName}; user id={ID};password={PW}"; //New AMM SERVER
+            //string strConnetion = string.Format("server=10.141.27.24;database=ATK5-AMM-DBv1; user id=sa;password=amm@123"); //Old AMM SERVER
+            string strConnetion = $"server={IP},{PORT};database={DBName}; user id={ID};password={PW}"; //New AMM SERVER
             this.connectionString = strConnetion;
 
             MSSql = new MsSqlManager(strConnetion);
@@ -1736,7 +1736,8 @@ namespace AMM
             query = string.Format(@"SELECT * FROM TB_IDNUNMER_INFO WITH (NOLOCK) WHERE LINE_CODE='{0}' and EQUIP_ID='{1}'", strLinecode, strEquipid);
             DataTable dt = MSSql.GetData(query);
 
-            DeletePickReadyInfo(strLinecode, strEquipid, dt.Rows[0]["PICK_PREFIX"].ToString().Trim() + dt.Rows[0]["PICK_NUM"].ToString().Trim());
+            if(dt.Rows.Count  != 0)
+                DeletePickReadyInfo(strLinecode, strEquipid, dt.Rows[0]["PICK_PREFIX"].ToString().Trim() + dt.Rows[0]["PICK_NUM"].ToString().Trim());
 
             return dt;
         }
