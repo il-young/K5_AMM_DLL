@@ -594,109 +594,127 @@ namespace AMM
             return strReturnValue;
         }
 
+        private object lockObject = new object();
+
         public string SetUnloadOut(string strLinecode, string strEquipid, string strReelid, bool bWebservice) ///3/9 다시 디버깅
         {
             string query1 = "", query2 = "";
+            string res = "";
 
-            ///////Pick 자재상태 업데이트
-            List<string> queryList1 = new List<string>();
-            string strSendtime = string.Format("{0}{1:00}{2:00}{3:00}{4:00}{5:00}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            ReturnLogSave($"SetUnloadOut Start : {strLinecode}, {strEquipid}, {strReelid}, {bWebservice}");
 
-            //queryList1.Add(Delete_Picklistinfo_Reelid(strLinecode, strEquipid, strReelid));
-            //query1 = string.Format(@"INSERT INTO TB_PICK_LIST_INFO (LINE_CODE,EQUIP_ID,PICKID,UID,STATUS,REQUESTOR) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}')",
-            //    strLinecode, strEquipid, strPickingid, strReelid, "OUT", strRequestor);
-
-            query1 = string.Format(@"UPDATE TB_PICK_LIST_INFO SET STATUS='{0}' WHERE UID='{1}'", "OUT", strReelid);
-
-            queryList1.Add(query1);
-
-            int nJudge = MSSql.SetData(queryList1); ///return 확인 해서 false 값 날려 야 함.
-
-            if (nJudge == 0)
+            try
             {
-                ReturnLogSave(string.Format("SetUnloadOut TB_PICK_LIST_INFO UPDATE FAIL LINECODE : {0}, EQUIPID : {1}, REELID : {2}", strLinecode, strEquipid, strReelid));
-                return "TB_PICK_LIST_INFO UPDATE FAIL";
-            }
-
-            ////자재 삭제          
-            string strJudge = Delete_MTL_Info(strReelid);
-
-            if (strJudge == "NG")
-            {
-                ReturnLogSave(string.Format("SetUnloadOut DELETE FAIL LINECODE : {0}, EQUIPID : {1}, REELID : {2}", strLinecode, strEquipid, strReelid));
-                return string.Format("{0} DELETE FAIL", strReelid);
-            }
-
-            ///////////자재 정보 가져 오기 //TB_PICK_LIST_INFO
-            string query = "";
-
-            query = string.Format(@"SELECT * FROM TB_PICK_LIST_INFO WITH (NOLOCK) WHERE LINE_CODE='{0}' and EQUIP_ID='{1}' and UID='{2}'", strLinecode, strEquipid, strReelid);
-            DataTable dt = MSSql.GetData(query);
-
-            if (dt != null && dt.Rows.Count > 0)
-            {
-                //////////로그 저장 ///TB_PICK_INOUT_HISTORY
-                List<string> queryList2 = new List<string>();
-                query2 = string.Format(@"INSERT INTO TB_PICK_INOUT_HISTORY (DATETIME,LINE_CODE,EQUIP_ID,PICKID,UID,STATUS,REQUESTOR,TOWER_NO,SID,LOTID,QTY,MANUFACTURER,PRODUCTION_DATE,INCH_INFO,INPUT_TYPE,ORDER_TYPE) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}')",
-                    strSendtime, strLinecode, strEquipid, dt.Rows[0]["PICKID"].ToString(), strReelid, "OUT", dt.Rows[0]["REQUESTOR"].ToString(), dt.Rows[0]["TOWER_NO"].ToString(), dt.Rows[0]["SID"].ToString(), dt.Rows[0]["LOTID"].ToString(),
-                    dt.Rows[0]["QTY"].ToString(), dt.Rows[0]["MANUFACTURER"].ToString(), dt.Rows[0]["PRODUCTION_DATE"].ToString(), dt.Rows[0]["INCH_INFO"].ToString(), dt.Rows[0]["INPUT_TYPE"].ToString(), dt.Rows[0]["ORDER_TYPE"].ToString());
-
-                queryList2.Add(query2);
-
-                nJudge = MSSql.SetData(queryList2); ///return 확인 해서 false 값 날려 야 함.
-
-                if (nJudge == 0)
+                lock (lockObject)
                 {
-                    ReturnLogSave(string.Format("SetUnloadOut TB_PICK_INOUT_HISTORY INSERT FAIL LINECODE : {0}, EQUIPID : {1}, REELID : {2}", strLinecode, strEquipid, strReelid));
-                    return "TB_PICK_INOUT_HISTORY INSERT FAIL";
+                    ///////Pick 자재상태 업데이트
+                    List<string> queryList1 = new List<string>();
+                    string strSendtime = string.Format("{0}{1:00}{2:00}{3:00}{4:00}{5:00}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+
+                    //queryList1.Add(Delete_Picklistinfo_Reelid(strLinecode, strEquipid, strReelid));
+                    //query1 = string.Format(@"INSERT INTO TB_PICK_LIST_INFO (LINE_CODE,EQUIP_ID,PICKID,UID,STATUS,REQUESTOR) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}')",
+                    //    strLinecode, strEquipid, strPickingid, strReelid, "OUT", strRequestor);
+
+                    query1 = string.Format(@"UPDATE TB_PICK_LIST_INFO SET STATUS='{0}' WHERE UID='{1}'", "OUT", strReelid);
+
+                    queryList1.Add(query1);
+
+                    int nJudge = MSSql.SetData(queryList1); ///return 확인 해서 false 값 날려 야 함.
+
+                    if (nJudge == 0)
+                    {
+                        ReturnLogSave(string.Format("SetUnloadOut TB_PICK_LIST_INFO UPDATE FAIL LINECODE : {0}, EQUIPID : {1}, REELID : {2}", strLinecode, strEquipid, strReelid));
+                        return "TB_PICK_LIST_INFO UPDATE FAIL";
+                    }
+
+                    ////자재 삭제          
+                    string strJudge = Delete_MTL_Info(strReelid);
+
+                    if (strJudge == "NG")
+                    {
+                        ReturnLogSave(string.Format("SetUnloadOut DELETE FAIL LINECODE : {0}, EQUIPID : {1}, REELID : {2}", strLinecode, strEquipid, strReelid));
+                        return string.Format("{0} DELETE FAIL", strReelid);
+                    }
+
+                    ///////////자재 정보 가져 오기 //TB_PICK_LIST_INFO
+                    string query = "";
+
+                    query = string.Format(@"SELECT * FROM TB_PICK_LIST_INFO WITH (NOLOCK) WHERE LINE_CODE='{0}' and EQUIP_ID='{1}' and UID='{2}'", strLinecode, strEquipid, strReelid);
+                    DataTable dt = MSSql.GetData(query);
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        //////////로그 저장 ///TB_PICK_INOUT_HISTORY
+                        List<string> queryList2 = new List<string>();
+                        query2 = string.Format(@"INSERT INTO TB_PICK_INOUT_HISTORY (DATETIME,LINE_CODE,EQUIP_ID,PICKID,UID,STATUS,REQUESTOR,TOWER_NO,SID,LOTID,QTY,MANUFACTURER,PRODUCTION_DATE,INCH_INFO,INPUT_TYPE,ORDER_TYPE) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}')",
+                            strSendtime, strLinecode, strEquipid, dt.Rows[0]["PICKID"].ToString(), strReelid, "OUT", dt.Rows[0]["REQUESTOR"].ToString(), dt.Rows[0]["TOWER_NO"].ToString(), dt.Rows[0]["SID"].ToString(), dt.Rows[0]["LOTID"].ToString(),
+                            dt.Rows[0]["QTY"].ToString(), dt.Rows[0]["MANUFACTURER"].ToString(), dt.Rows[0]["PRODUCTION_DATE"].ToString(), dt.Rows[0]["INCH_INFO"].ToString(), dt.Rows[0]["INPUT_TYPE"].ToString(), dt.Rows[0]["ORDER_TYPE"].ToString());
+
+                        queryList2.Add(query2);
+
+                        nJudge = MSSql.SetData(queryList2); ///return 확인 해서 false 값 날려 야 함.
+
+                        if (nJudge == 0)
+                        {
+                            ReturnLogSave(string.Format("SetUnloadOut TB_PICK_INOUT_HISTORY INSERT FAIL LINECODE : {0}, EQUIPID : {1}, REELID : {2}", strLinecode, strEquipid, strReelid));
+                            return "TB_PICK_INOUT_HISTORY INSERT FAIL";
+                        }
+
+                        //////////////IT Webservice////////////
+                        /////모든 MNBR을 넣어 줘야 함.
+                        string strMnbr = "", strResut = "", strTwrno = "", strGroup = "";
+                        strTwrno = dt.Rows[0]["TOWER_NO"].ToString();
+                        strGroup = strTwrno.Substring(2, 1);
+
+                        if (strTwrno == "T0101") strMnbr = "34118";
+                        else if (strTwrno == "T0102") strMnbr = "34117";
+                        else if (strTwrno == "T0103") strMnbr = "34119";
+                        else if (strTwrno == "T0104") strMnbr = "34120";
+                        else if (strTwrno == "T0201") strMnbr = "34121";
+                        else if (strTwrno == "T0202") strMnbr = "34122";
+                        else if (strTwrno == "T0203") strMnbr = "34123";
+                        else if (strTwrno == "T0204") strMnbr = "34124";
+                        else if (strTwrno == "T0301") strMnbr = "34125";
+                        else if (strTwrno == "T0302") strMnbr = "34126";
+                        else if (strTwrno == "T0303") strMnbr = "34127";
+                        else if (strTwrno == "T0304") strMnbr = "34128";
+                        else if (strTwrno == "T0401") strMnbr = "34861";
+                        else if (strTwrno == "T0402") strMnbr = "34858";
+                        else if (strTwrno == "T0403") strMnbr = "34854";
+                        else if (strTwrno == "T0404") strMnbr = "34853";
+                        else if (strTwrno == "T0501") strMnbr = "34862";
+                        else if (strTwrno == "T0502") strMnbr = "34852";
+                        else if (strTwrno == "T0503") strMnbr = "34857";
+                        else if (strTwrno == "T0504") strMnbr = "34863";
+                        else if (strTwrno == "T0601") strMnbr = "34859";
+                        else if (strTwrno == "T0602") strMnbr = "34860";
+                        else if (strTwrno == "T0603") strMnbr = "34855";
+                        else if (strTwrno == "T0604") strMnbr = "34856";
+                        //[210907_Sangik.choi_7번그룹 추가
+                        else if (strTwrno == "T0701") strMnbr = "6417";
+                        else if (strTwrno == "T0702") strMnbr = "6420";
+                        else if (strTwrno == "T0703") strMnbr = "6418";
+                        else if (strTwrno == "T0704") strMnbr = "6419";
+                        //]210907_Sangik.choi_7번그룹 추가
+                        return "OK";
+
+                    }
+                    else
+                    {
+                        return "NG";
+                    }
                 }
-
-                //////////////IT Webservice////////////
-                /////모든 MNBR을 넣어 줘야 함.
-                string strMnbr = "", strResut = "", strTwrno = "", strGroup = "";
-                strTwrno = dt.Rows[0]["TOWER_NO"].ToString();
-                strGroup = strTwrno.Substring(2, 1);
-
-                if (strTwrno == "T0101") strMnbr = "34118";
-                else if (strTwrno == "T0102") strMnbr = "34117";
-                else if (strTwrno == "T0103") strMnbr = "34119";
-                else if (strTwrno == "T0104") strMnbr = "34120";
-                else if (strTwrno == "T0201") strMnbr = "34121";
-                else if (strTwrno == "T0202") strMnbr = "34122";
-                else if (strTwrno == "T0203") strMnbr = "34123";
-                else if (strTwrno == "T0204") strMnbr = "34124";
-                else if (strTwrno == "T0301") strMnbr = "34125";
-                else if (strTwrno == "T0302") strMnbr = "34126";
-                else if (strTwrno == "T0303") strMnbr = "34127";
-                else if (strTwrno == "T0304") strMnbr = "34128";
-                else if (strTwrno == "T0401") strMnbr = "34861";
-                else if (strTwrno == "T0402") strMnbr = "34858";
-                else if (strTwrno == "T0403") strMnbr = "34854";
-                else if (strTwrno == "T0404") strMnbr = "34853";
-                else if (strTwrno == "T0501") strMnbr = "34862";
-                else if (strTwrno == "T0502") strMnbr = "34852";
-                else if (strTwrno == "T0503") strMnbr = "34857";
-                else if (strTwrno == "T0504") strMnbr = "34863";
-                else if (strTwrno == "T0601") strMnbr = "34859";
-                else if (strTwrno == "T0602") strMnbr = "34860";
-                else if (strTwrno == "T0603") strMnbr = "34855";
-                else if (strTwrno == "T0604") strMnbr = "34856";
-                //[210907_Sangik.choi_7번그룹 추가
-                else if (strTwrno == "T0701") strMnbr = "6417";
-                else if (strTwrno == "T0702") strMnbr = "6420";
-                else if (strTwrno == "T0703") strMnbr = "6418";
-                else if (strTwrno == "T0704") strMnbr = "6419";
-                //]210907_Sangik.choi_7번그룹 추가
-                return "OK";
-
             }
-            else
+            catch (Exception ex)
             {
-                return "NG";
+                return $"NG,{ex.Message}";
             }
-
+            finally
+            {
+                res = "NG";
+            }
+            return res;
             
-
 /*            if (strMnbr != "")
             {
                 if (bWebservice)
@@ -878,6 +896,7 @@ namespace AMM
                             catch (Exception ex)
                             {
                                 ReturnLogSave("SetMaterialSync" + "|||" + ex.Message);
+                                return String.Format($"NG, Exception, {ex}");
                             }
 
                         }
